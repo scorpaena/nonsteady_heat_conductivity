@@ -1,4 +1,3 @@
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 import matplotlib.ticker as ticker
 import matplotlib.pyplot as plt
@@ -26,7 +25,7 @@ ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.0f'))
 ax.set_xlabel('thickness, mm', fontsize=8)
 
 # Customize y axis
-loc = ticker.MultipleLocator(base=max(main.timeArray)/4)
+loc = ticker.MultipleLocator(base=max(main.timeArray) / 4)
 ax.yaxis.set_major_locator(loc)
 form = '%.1f' if max(main.timeArray) < 4 else '%.0f'
 ax.yaxis.set_major_formatter(ticker.FormatStrFormatter(form))
