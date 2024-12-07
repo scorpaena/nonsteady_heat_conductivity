@@ -1,5 +1,5 @@
 #parameters are being returned from exe.py module
-s = [0, 0] #layers thickness
+LAYER_THICKESS = [0, 0] #layers thickness
 TIME = 0 #heat exposure time
 
 def n(s):
@@ -9,10 +9,9 @@ def n(s):
     '''
     x0, x1 = 0.001, 1
     y0, y1 = 10, 1000
-    n = round((max(s)-x0)*(y1-y0)/(x1-x0) + y0)
-    return n
+    return round((max(s)-x0)*(y1-y0)/(x1-x0) + y0)
 
-n = n(s) #number of spans, per each layer
+spans_number = n(LAYER_THICKESS) #number of spans, per each layer
 
 tau = 0.5 #time pitch
 

@@ -44,9 +44,9 @@ class heatProperties:
                 a0 + a1*T[4] + a2*T[4]**2 + a3*T[4]**3 + a4*T[4]**4 - lambda_[4])
 
     def _heatConductSystemSolution(self):
-        initGuess = (0,0,0,0,0)
+        initGuess = (0, 0, 0, 0, 0)
         systemOfEquation = self._heatConductSystem
-        solution = opt.fsolve(systemOfEquation,initGuess)
+        solution = opt.fsolve(systemOfEquation, initGuess)
         return solution
     
     def heatConduct(self, T):
@@ -88,13 +88,13 @@ class heatProperties:
     
     def Fo(self, T, j, tau):
         '''Fourier number'''
-        h = c.s[j]/(c.n)
+        h = c.LAYER_THICKESS[j]/(c.spans_number)
         fo = (self.heatConduct(T)*tau)/(self.density*self.heatCapac(T)*h**2)
         return fo
 
     def Bi(self, T, j):
         '''Biot number'''
-        h = c.s[j]/(c.n)
+        h = c.LAYER_THICKESS[j]/(c.spans_number)
         bi = c.alfa[j]*h / self.heatConduct(T)
         return bi
 

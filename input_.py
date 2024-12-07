@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import heatProperties as hP
+import heat_properties as hP
 import constants as c
 
 #assigning configuration

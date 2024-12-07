@@ -2,7 +2,8 @@ from matplotlib import cm
 import matplotlib.ticker as ticker
 import matplotlib.pyplot as plt
 import numpy as np
-import geometryProperties as gP
+import geometry_properties as gP
+from constants import LAYER_THICKESS
 import main
 
 
@@ -10,16 +11,16 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 # Make the data
-X = gP.gM * 1e3
+X = gP.grid_map(LAYER_THICKESS) * 1e3
 Y = main.timeArray
 X, Y = np.meshgrid(X, Y)
 Z = main.T_output
 
 # Plot the surface
 surf = ax.plot_surface(X, Y, Z, cmap=cm.jet)
-
+print(">>>>>>>>>>>", gP.grid_map(LAYER_THICKESS))
 # Customize x axis
-loc = ticker.MultipleLocator(base=1e3*max(gP.gM)/4)
+loc = ticker.MultipleLocator(base=1e3*max(gP.grid_map(LAYER_THICKESS))/4)
 ax.xaxis.set_major_locator(loc)
 ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.0f'))
 ax.set_xlabel('thickness, mm', fontsize=8)
