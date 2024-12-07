@@ -1,9 +1,9 @@
-import numpy as np
 import scipy.optimize as opt
 import constants as c
+from geometry_properties import get_spans_number
 
 
-class heatProperties:
+class HeatProperties:
 
     def __init__(self, material, density):
         self.material = material
@@ -11,25 +11,25 @@ class heatProperties:
 
     def _layerTempAssign(self):
         if self.material == 'Iron':
-            T = [20,200,400,600,800]
+            T = [20, 200, 400, 600, 800]
         else:
-            T = [20,100,300,600,900]
+            T = [20, 100, 300, 600, 900]
         return T
    
         
     def _layerLambdaAssign(self):    
         if self.material == 'Iron':
-            lambda_ = [41,43,37,32,24]
+            lambda_ = [41, 43, 37, 32, 24]
         else:
-            lambda_ = [395,392,373,344,321]
+            lambda_ = [395, 392, 373, 344, 321]
         return lambda_
     
     
     def _layerCapacityAssign(self):  
         if self.material == 'Iron':
-            c_ = [469,519,553,611,703]
+            c_ = [469, 519, 553, 611, 703]
         else:
-            c_ = [381,399,422,456,482]
+            c_ = [381, 399, 422, 456, 482]
         return c_
 
 #==== Heat Conductivity System Solution Block ======
@@ -73,7 +73,7 @@ class heatProperties:
     def _heatCapacSystemSolution(self):
         initGuess = (0,0,0,0,0)
         systemOfEquation = self._heatCapacSystem
-        solution = opt.fsolve(systemOfEquation,initGuess)
+        solution = opt.fsolve(systemOfEquation, initGuess)
         return solution
         
     def heatCapac(self, T):
@@ -86,15 +86,17 @@ class heatProperties:
         return Capacity
 #==== End of Heat Capacity System Solution Block ======       
     
-    def Fo(self, T, j, tau):
+    def Fo(self, T, j, tau, layers):
         '''Fourier number'''
-        h = c.LAYER_THICKESS[j]/(c.spans_number)
+        spans_number = get_spans_number(layers)
+        h = layers[j] / spans_number
         fo = (self.heatConduct(T)*tau)/(self.density*self.heatCapac(T)*h**2)
         return fo
 
-    def Bi(self, T, j):
+    def Bi(self, T, j, layers):
         '''Biot number'''
-        h = c.LAYER_THICKESS[j]/(c.spans_number)
+        spans_number = get_spans_number(layers)
+        h = layers[j]/spans_number
         bi = c.alfa[j]*h / self.heatConduct(T)
         return bi
 
@@ -102,11 +104,3 @@ class heatProperties:
         '''temperature conductivity coeff'''
         tempConduct = self.heatConduct(T)/(self.density*self.heatCapac(T))
         return tempConduct
-
-iron = heatProperties('Iron', 7680)
-copper = heatProperties('Copper', 8933)
-
-layer0 = iron
-layer1 = copper
-
-layers = []
