@@ -26,10 +26,3 @@ def grid_map(layers):
         j = 0 if i <= spans_number-1 else 1
         x_axis.append(x_axis[i] + layers[j]/spans_number)
     return np.round(np.array(x_axis), 3)
-
-
-# if __name__ == '__main__':
-#     layers = [10, 20]
-#     x = grid_map(layers)
-#     for i in range(get_nodes_amount(layers)):
-#         print(i, x[i])

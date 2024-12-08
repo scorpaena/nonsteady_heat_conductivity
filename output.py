@@ -32,10 +32,10 @@ def plot_3d(layers, time_array, T_output, T_bulk):
 
     # Customize z axis
     ax.set_zlim(min(T_bulk), max(T_bulk))
-    ax.set_zlabel('temperature, \u2103', fontsize=8)
+    ax.set_zlabel('temperature, K', fontsize=8)
 
     # Add a color bar which maps values to colors
     cb = plt.colorbar(surf, shrink=0.5, aspect=10, pad=0.08)
-    cb.set_label('\u2103', y=1, rotation=0)
+    cb.set_label('K', y=1, rotation=0)
 
     plt.show()

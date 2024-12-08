@@ -5,8 +5,9 @@ from geometry_properties import get_nodes_amount, get_spans_number
 from output import plot_3d
 import constants as c
 
-iron = HeatProperties('Iron', 7680)
-copper = HeatProperties('Copper', 8933)
+iron = HeatProperties('iron')
+copper = HeatProperties('copper')
+
 
 if __name__ == '__main__':
     print('Choose configuration #, where:\n\
@@ -24,7 +25,7 @@ if __name__ == '__main__':
 
     layers = [0.001 * int(s0), 0.001 * int(s1)]
 
-    TIME = float(input('Enter time of exposure in sec.: '))
+    TIME = int(input('Enter time of exposure in sec.: '))
     # c.TIME = TIME
 
     print('Please wait, program is in process...')
@@ -41,50 +42,12 @@ if __name__ == '__main__':
 
     h = [layers[0]/spans_number, layers[1]/spans_number] #spatial pitch
 
-    T = nodes_amount*[c.T_initial] #current temperature
+    T = nodes_amount * [c.T_initial] #current temperature
     T_bulk = [] #temperature matrix needed for the output plots
 
     time = 0 #total time
     tau = c.tau #time pitch
     time_array = [] #total time array needed for the output plots
-
-    # while time <= TIME:
-    #     time_array.append(time)
-    #     T_bulk += T
-    #     for i in range(get_nodes_amount(layers)):
-    #         j = 0 if i < spans_number else 1
-    #
-    #         alfa[0] = 1/(1+layers_order[0].Bi(T[0], 0, layers))
-    #         beta[0] = layers_order[0].Bi(T[0], 0, layers)*c.T_heat/(1+layers_order[0].Bi(T[0], 0, layers))
-    #
-    #         a0 = layers_order[0].tempConduct(T[i])
-    #         a1 = layers_order[1].tempConduct(T[i])
-    #
-    #         ai = layers_order[j].heatConduct(T[i])/(h[j]**2)
-    #         bi = (2*layers_order[j].heatConduct(T[i])/(h[j]**2)+layers_order[j].density * layers_order[j].heatCapac(T[i])/tau)
-    #         ci = layers_order[j].heatConduct(T[i])/(h[j]**2)
-    #         fi = -layers_order[j].density*layers_order[j].heatCapac(T[i])*T[i]/tau
-    #
-    #         alfa[i] = ai/(bi - ci * alfa[i-1])
-    #         beta[i] = (ci*beta[i-1]-fi)/(bi-ci*alfa[i-1])
-    #
-    #         alfa[spans_number] = (2*a0*a1*tau*layers_order[1].heatConduct(T[i])/(2*a0*a1*tau * (layers_order[1].heatConduct(T[i]) + layers_order[0].heatConduct(T[i])*(1-alfa[spans_number-2]))
-    #                       +(h[j]**2)*(a0*layers_order[1].heatConduct(T[i])
-    #                       +a1*layers_order[0].heatConduct(T[i]))))
-    #
-    #         beta[spans_number] = ((2*a0*a1*tau*layers_order[0].heatConduct(T[i])*beta[spans_number-2]
-    #                       +(h[j]**2)*(a0*layers_order[1].heatConduct(T[i])
-    #                       +a1*layers_order[0].heatConduct(T[i]))*T[spans_number-1])
-    #                       /(2*a0*a1*tau*(layers_order[1].heatConduct(T[i])
-    #                       +layers_order[0].heatConduct(T[i])*(1-alfa[spans_number-2]))
-    #                       +(h[j]**2)*(a0*layers_order[1].heatConduct(T[i])
-    #                       +a1*layers_order[0].heatConduct(T[i]))))
-    #
-    #         T[nodes_amount-1] = ((layers_order[1].Bi(T[nodes_amount-1], 1, layers)*c.T_ambient + T[nodes_amount-2])/(1-layers_order[1].Bi(T[nodes_amount-1], 1, layers)))
-    #
-    #     for i in range(nodes_amount-2, -1, -1):
-    #         T[i] = alfa[i]*T[i+1]+beta[i]
-    #     time += tau
 
     while time <= TIME:
         time_array.append(time)
@@ -95,43 +58,43 @@ if __name__ == '__main__':
             j = 0 if i < spans_number else 1
 
             # Boundary condition at the first node
-            Bi_0 = layers_order[0].Bi(T[0], 0, layers)
+            Bi_0 = layers_order[0].Bi(alfa=layers_order[0].convective_heat_transfer_coefficient, h=h[0], heat_conductivity=layers_order[0].get_thermal_conductivity(T[0]))
             alfa[0] = 1 / (1 + Bi_0)
             beta[0] = Bi_0 * c.T_heat / (1 + Bi_0)
 
             # Conductivity values for layers
-            a0 = layers_order[0].tempConduct(T[i])
-            a1 = layers_order[1].tempConduct(T[i])
+            a0 = layers_order[0].get_thermal_conductivity(T[i])
+            a1 = layers_order[1].get_thermal_conductivity(T[i])
 
             # Heat transfer coefficients for current layer
-            ai = layers_order[j].heatConduct(T[i]) / (h[j] ** 2)
-            bi = (2 * ai + layers_order[j].density * layers_order[j].heatCapac(T[i]) / tau)
+            ai = layers_order[j].get_specific_heat(T[i]) / (h[j] ** 2)
+            bi = (2 * ai + layers_order[j].density * layers_order[j].get_specific_heat(T[i]) / tau)
             ci = ai
-            fi = -layers_order[j].density * layers_order[j].heatCapac(T[i]) * T[i] / tau
+            fi = -layers_order[j].density * layers_order[j].get_specific_heat(T[i]) * T[i] / tau
 
             # Recurrence relations for alpha and beta
             alfa[i] = ai / (bi - ci * alfa[i - 1])
             beta[i] = (ci * beta[i - 1] - fi) / (bi - ci * alfa[i - 1])
 
             # Boundary condition at the interface between layers
-            numerator_alpha = 2 * a0 * a1 * tau * layers_order[1].heatConduct(T[i])
+            numerator_alpha = 2 * a0 * a1 * tau * layers_order[1].get_thermal_conductivity(T[i])
             denominator_alpha = (
-                    2 * a0 * a1 * tau * (layers_order[1].heatConduct(T[i]) +
-                                         layers_order[0].heatConduct(T[i]) * (1 - alfa[spans_number - 2]))
-                    + (h[j] ** 2) * (a0 * layers_order[1].heatConduct(T[i]) +
-                                     a1 * layers_order[0].heatConduct(T[i]))
+                    2 * a0 * a1 * tau * (layers_order[1].get_thermal_conductivity(T[i]) +
+                                         layers_order[0].get_thermal_conductivity(T[i]) * (1 - alfa[spans_number - 2]))
+                    + (h[j] ** 2) * (a0 * layers_order[1].get_thermal_conductivity(T[i]) +
+                                     a1 * layers_order[0].get_thermal_conductivity(T[i]))
             )
             alfa[spans_number] = numerator_alpha / denominator_alpha
 
             numerator_beta = (
-                    2 * a0 * a1 * tau * layers_order[0].heatConduct(T[i]) * beta[spans_number - 2] +
-                    (h[j] ** 2) * (a0 * layers_order[1].heatConduct(T[i]) +
-                                   a1 * layers_order[0].heatConduct(T[i])) * T[spans_number - 1]
+                    2 * a0 * a1 * tau * layers_order[0].get_thermal_conductivity(T[i]) * beta[spans_number - 2] +
+                    (h[j] ** 2) * (a0 * layers_order[1].get_thermal_conductivity(T[i]) +
+                                   a1 * layers_order[0].get_thermal_conductivity(T[i])) * T[spans_number - 1]
             )
             beta[spans_number] = numerator_beta / denominator_alpha
 
             # Boundary condition at the last node
-            Bi_N = layers_order[1].Bi(T[nodes_amount - 1], 1, layers)
+            Bi_N = layers_order[1].Bi(alfa=layers_order[1].convective_heat_transfer_coefficient, h=h[1], heat_conductivity = layers_order[1].get_thermal_conductivity(T[nodes_amount - 1]))
             T[nodes_amount - 1] = (Bi_N * c.T_ambient + T[nodes_amount - 2]) / (1 - Bi_N)
 
         # Backward substitution to compute temperature at all nodes
