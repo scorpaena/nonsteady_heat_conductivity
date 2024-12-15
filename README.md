@@ -8,3 +8,5 @@ Uknown temperature (as a function of time and thickness) is obtained using finit
 > * Matplotlib  >= 3.0.3
 > * Scipy       >= 1.2.1
 
+![](_screenshots/temperature_destribution.png)
+

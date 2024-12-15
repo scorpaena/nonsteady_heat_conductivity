@@ -1,6 +1,4 @@
-import scipy.optimize as opt
 from constants import MATERIALS
-from geometry_properties import get_spans_number
 from splinecloud_scipy import load_spline
 from functools import cache
 
@@ -14,6 +12,9 @@ class HeatProperties:
         self.specific_heat_curve_id = MATERIALS[material]['specific_heat_curve_id']
         self.thermal_conductivity_curve_id = MATERIALS[material]['thermal_conductivity_curve_id']
 
+    def __str__(self):
+        return self.material
+
     @staticmethod
     @cache
     def get_spline(curve_id):
@@ -25,14 +26,14 @@ class HeatProperties:
     def get_thermal_conductivity(self, T):
         return self.get_spline(self.thermal_conductivity_curve_id).eval(T)
 
+    def temperature_conductivity(self, heat_conductivity, heat_capacity):
+        '''temperature conductivity coeff'''
+        return heat_conductivity / (self.density * heat_capacity)
+
     def Fo(self, tau, h, heat_conductivity, heat_capacity):
         '''Fourier number'''
-        return (heat_conductivity * tau) / (self.density * heat_capacity * h**2)
+        return self.temperature_conductivity(heat_conductivity, heat_capacity) * tau / (h ** 2)
 
     def Bi(self, alfa, h, heat_conductivity):
         '''Biot number'''
         return alfa * h / heat_conductivity
-
-    def temperature_conductivity(self, heat_conductivity, heat_capacity):
-        '''temperature conductivity coeff'''
-        return heat_conductivity / (self.density * heat_capacity)
