@@ -4,11 +4,6 @@ TIME = 0 #heat exposure time
 
 tau = 0.5 #time pitch
 
-#thermal emissivity
-# thermal_emissivity_internal = 1600
-# thermal_emissivity_external = 140
-# thermal_emissivity = [thermal_emissivity_internal, thermal_emissivity_external]
-
 T_heat = 1073 #heat temperature inside from the hot side
 T_ambient = 303 #ambient temperature (air, room, etc.)
 T_initial = 293 #initial temperature of the metall (i.e. inner surface)
