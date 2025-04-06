@@ -1,8 +1,7 @@
 import numpy as np
 from heat_properties import HeatProperties
 from geometry_properties import get_nodes_amount, get_spans_number
-from output import pyvista_plot_3d, matplotlib_plot_3d
-from stpyvista import stpyvista as stv
+from output import matplotlib_plot_3d
 import streamlit as st
 import constants as c
 from logging import getLogger
