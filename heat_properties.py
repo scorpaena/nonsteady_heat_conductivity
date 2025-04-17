@@ -1,3 +1,4 @@
+import os
 from constants import MATERIALS
 from splinecloud_scipy import load_spline
 from cachetools import cached, TTLCache
@@ -16,7 +17,7 @@ class HeatProperties:
         return self.material
 
     @staticmethod
-    @cached(cache=TTLCache(maxsize=512, ttl=600))
+    @cached(cache=TTLCache(maxsize=int(os.getenv("CACHE_MAX_SIZE", 256)), ttl=int(os.getenv("CACHE_LIFE_PERIOD"))))
     def get_spline(curve_id):
         return load_spline(curve_id)
 
