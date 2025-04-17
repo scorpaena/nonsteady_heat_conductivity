@@ -1,0 +1,22 @@
+services:
+  streamlit_thermal_conductivity_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: maxeval/thermal_conductivity:latest
+    container_name: streamlit_thermal_conductivity_app
+    ports:
+      - "127.0.0.1:8501:8501"
+    environment:
+     - OS_TYPE=linux
+     - CACHE_LIFE_PERIOD=600
+     - CACHE_MAX_SIZE=256
+    volumes:
+     - .:/app
+    restart: always
+    command:
+      - streamlit
+      - run
+      - main.py
+      - --server.port=8501
+      - --server.address=0.0.0.0

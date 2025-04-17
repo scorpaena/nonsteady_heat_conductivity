@@ -1,26 +1,24 @@
 #parameters are being returned from exe.py module
-s = [0, 0] #layers thickness
+LAYER_THICKESS = [0, 0] #layers thickness
 TIME = 0 #heat exposure time
-
-def n(s):
-    '''    
-    straight line equation is utilized
-    as a method of finding number of spans i.e. n=f(s)
-    '''
-    x0, x1 = 0.001, 1
-    y0, y1 = 10, 1000
-    n = round((max(s)-x0)*(y1-y0)/(x1-x0) + y0)
-    return n
-
-n = n(s) #number of spans, per each layer
 
 tau = 0.5 #time pitch
 
-#thermal emissivity
-alfaInternal = 1600
-alfaExternal = 140
-alfa = [alfaInternal, alfaExternal]
+T_heat = 1073 #heat temperature inside from the hot side
+T_ambient = 303 #ambient temperature (air, room, etc.)
+T_initial = 293 #initial temperature of the metall (i.e. inner surface)
 
-T_heat = 800 #heat temperature inside from the hot side
-T_ambient = 30 #ambient temperature (air, room, etc.)
-T_initial = 20 #initial temperature of the metall (i.e. inner surface)
+MATERIALS = {
+    'iron': {
+        'density': 7680,
+        'convective_heat_transfer_coefficient': 140,
+        'specific_heat_curve_id': 'spl_MiG6mpKhbRqa',
+        'thermal_conductivity_curve_id': 'spl_ddmQkxBmv9iT',
+    },
+    'copper': {
+        'density': 8900,
+        'convective_heat_transfer_coefficient': 1600,
+        'specific_heat_curve_id': 'spl_2WXQfadWt7wa',
+        'thermal_conductivity_curve_id': 'spl_RqqGq2ZpZ0Vg',
+    },
+}
